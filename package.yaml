@@ -1,0 +1,38 @@
+name:    demo-emacs-haskell
+github:  cydparser/demo-emacs-haskell
+
+dependencies:
+  - base >= 4.7 && < 5
+
+default-extensions:
+  - NoMonomorphismRestriction
+
+ghc-options:
+  - -Wall
+  - -fno-warn-missing-signatures
+  - -fno-warn-type-defaults
+  - -threaded
+  - -rtsopts
+  - -with-rtsopts=-N
+
+executables:
+  demo-list:
+    main: Main.hs
+    source-dirs:
+      - src
+
+tests:
+  doctest:
+    main: test/DocTest.hs
+    dependencies:
+      - QuickCheck
+      - doctest
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - src
+      - test
+    dependencies:
+      - QuickCheck
+      - hspec
+      - hspec-discover
