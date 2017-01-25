@@ -1,0 +1,440 @@
+#+TITLE: Using Emacs with Haskell Projects
+
+* Introduction
+
+** Meta
+
+  Available on GitHub: https://github.com/cydparser/demo-emacs-haskell
+
+  #+BEGIN_SRC text
+          -------        -------
+       --/       \--  --/       \--
+     -/             -/             \-
+    /              /  \              \
+    |              |  |              |
+   /              /    \              \
+   |  <3 Haskell  | Me |   <3 Emacs   |
+   \              \    /              /
+    |              |  |              |
+    \              \  /              /
+     -\             -\             /-
+       --\       /--  --\       /--
+          -------        -------
+  #+END_SRC
+
+** [[https://github.com/jwiegley/use-package][use-package]]
+
+  The [[./emacs.d/init.el][init]] config included with this demo uses use-package to install and
+  configure packages.
+
+  + View added keybindings: =M-x describe-personal-keybindings=
+
+** [[https://github.com/kai2nenobu/guide-key][guide-key]]
+
+  The package guide-key displays available keygindings automatically in the
+  minibuffer. Typing the start of a command and waiting will result in a popup
+  that shows commands that have the same prefix.
+
+* Haskell
+
+  Haskell is a purely functional, lazy, statically typed language.
+
+** Similarities to Emacs Lisp
+
+  + Expressions rather than statements
+
+    #+BEGIN_SRC haskell
+      -- Only definitions are allowed at the top-level.
+      x = if expr
+        then "something"
+        else "otherthing"
+    #+END_SRC
+
+  + First-class Functions and Lambdas
+
+    Functions, lambdas, and curried functions are all called in the same way --
+    there is not an equivalent of ~#'~, ~apply~, ~apply-partially~, and ~funcall~.
+
+    #+BEGIN_SRC haskell
+      -- A function definition.
+      plus1 n = n + 1
+
+      --     + lambda
+      --     v
+      div2 = \n -> n / 2
+
+      thenDiv2 f = -- Functions can be passed as arguments.
+        f . div2   -- And returned.
+
+      -- `.` is for function composition. It is an ordinary function.
+
+      main = print (thenDiv2 plus1 10)
+      -- 6
+    #+END_SRC
+
+  + Let Expressions
+
+    #+BEGIN_SRC haskell
+      func x =
+        let y = x + 1
+            f a = a * 10  -- Local function
+        in f y
+
+      -- Alternatively:
+      func' x =
+        f y
+        where
+          y = x + 1
+          f a = a * 10
+    #+END_SRC
+
+  + REPL (GHCi)
+
+** Statically Typed with Type Inference
+
+   Writing type signatures is usually optional.
+
+   #+BEGIN_SRC haskell
+     --      + "has type"
+     --      |   + an array of some type
+     --      |   |  + the type constructor of functions
+     --      |   |  |  + concrete type
+     --      v   v  v  v
+     length' :: [a] -> Int
+     length' xs = length xs
+
+     --          + constraint: `a` has an instance of Num
+     --          |
+     --      v--------v
+     plus :: (Num a) => a -> a -> a
+     plus x y = x + y
+   #+END_SRC
+
+** Purely Functional
+
+   + Functions behave like mathematical functions (input -> output)
+
+     A function has at least one argument and must return a value.
+
+   + Referential transparency
+
+     An expression can be replaced by the value without changing the
+     computation.
+
+** Lazy (by default)
+
+   + Call by need
+
+     If-then-else can be implemented  without special operations.
+
+     #+BEGIN_SRC haskell
+       ifThenElse :: Bool -> a -> a -> a
+       ifThenElse cond expr0 expr1 =
+         case cond of
+           True  -> expr0
+           False -> expr1
+     #+END_SRC
+
+   + Infinite lists are useful
+
+     #+BEGIN_SRC haskell
+       threeEven =
+         take 3 (map (* 2) [0..])
+       -- [0,2,4]
+     #+END_SRC
+
+** Immutable (by default)
+
+   + Values are bound to names rather than assigned to variables
+
+   + Only one function to test for equality: ~==~
+
+     No need to worry about whether the pointers reference the same location.
+
+** No Nil or Null
+
+   + The possibility for the absence of a value is expressed in the type.
+
+   #+BEGIN_SRC haskell
+     -- data Maybe a = Just a | Nothing
+
+     noInt :: Maybe Int
+     noInt = Nothing
+   #+END_SRC
+
+** IO Actions
+
+   + Using IO changes the type of a function.
+
+   #+BEGIN_SRC haskell
+     f :: Int -> IO Int
+     f i = do
+       print i
+       pure (i + 1)
+   #+END_SRC
+
+   An ~IO a~ is a recipe for an action that can be passed around and composed
+   without performing the action. Only actions that are assigned to ~main~ can
+   eventually be performed.
+
+* The Project
+
+  A simple executable that manipulates lists.
+
+  #+BEGIN_SRC sh
+    stack exec -- demo-list cdr 1 2 3
+    # 2 3
+  #+END_SRC
+
+** [[http://projectile.readthedocs.io/en/latest/][Projectile]]
+
+   + Enables project navigation, building, testing, etc.
+
+   + Prefix =C-c p=
+
+   + Prefix =C-c p 4= performs the action in a different frame without hiding the
+     current buffer
+
+   * Open /List.hs/ in a different frame: =C-c p 4 f List.hs=
+
+** [[https://emacs-helm.github.io/helm/][Helm]]
+
+  After typing =C-c p 4 f= the minibuffer will display a list of files. Helm
+  allows one to use fuzzy searching amongst other (perhaps too many) things.
+
+  + Use =C-j= when you would instinctively use =tab=
+
+  + Uses normal Emacs navigation bindings (=C-n=, =C-p=, =M->= etc.)
+
+  + Press enter when the highlighted selection is what you want
+
+  + Standard Emacs keybindings overridden by this config:
+    - =C-x C-f= ~helm-find-files~
+    - =C-h a= ~helm-apropos~
+    - =C-x b= ~helm-mini~
+    - =M-s o= ~helm-occur~
+    - =M-x= ~helm-M-x~
+
+** [[https://commercialhaskell.github.io/intero/][Intero]]
+
+  + Backend process that enables:
+    - On the fly type checking
+    - Code completion
+    - Jumping to definitions
+    - Displaying type of thing at point
+    - And more
+
+  + Installed once per Haskell project (not globally)
+
+    Opening /List.hs/ will either result in:
+
+    #+BEGIN_SRC text
+      Booting up intero ...
+    #+END_SRC
+
+    if Intero was already installed, or
+
+    #+BEGIN_SRC text
+      Installing intero-0.1.20 automatically ...
+    #+END_SRC
+
+  + View running backends with =M-x intero-list-buffers=
+    - =p= move up
+    - =n= move down
+    - =d= mark a buffer for deletion
+    - =x= delete marked buffers
+
+  + Keybindings
+    - =C-c C-i= ~intero-info~
+    - =C-c C-l= ~intero-repl-load~
+    - =C-c C-r= ~intero-apply-suggestions~
+    - =C-c C-t= ~intero-type-at~
+    - =C-c C-z= ~intero-repl~
+    - =M-.= ~intero-goto-definition~
+
+** Yasnippet [[https://github.com/haskell/haskell-snippets#available-expansion-keys][haskell-snippets]]
+
+  In /List.hs/, type =mod= and press =M-/= (~hippie-expand~). The minibuffer (helm
+  popup) will display multiple options. Select "simple module" and press
+  enter. Press =tab= to accept the default module named.
+
+  + Especially useful templates
+    - =mod= add module name based on filepath
+    - =main= add ~Main~ module and ~main~ definition
+    - =lang= add language extension pragma
+    - =opt= add GHC option pragma
+
+** ~List a~
+
+  * Add the following:
+
+  #+BEGIN_SRC haskell
+    data List a = Cons a (List a) | Nil
+      deriving (Eq, Show)
+  #+END_SRC
+
+** Search by Type
+
+  Functions can be searched for by name or by type.
+
+  + =M-x hayoo= Search using [[http://hayoo.fh-wedel.de/][Hayoo!]]
+
+  + =M-x= hoogle Search using [[https://www.haskell.org/hoogle/][Hoogle]]
+
+  We want to find a function takes a collection and indicates if it is empty.
+
+  * Search for ~f a -> Bool~
+
+** [[http://www.flycheck.org/en/latest/][Flycheck]]
+
+  ~null~ is the function that we want, but it requires that ~List~ be ~Foldable~. We
+  could write the ~Foldable~ instance ourselves, but the compiler can implement it
+  for us.
+
+  * Add ~Foldable~ to the ~deriving~ tuple.
+
+  Intero uses Flycheck to compile the project and warn about errors. ~Foldable~ is
+  underlined with a red squigly line.
+
+  + Fly check uses prefix =C-c !=:
+    - =C-c ! p= ~flycheck-previous-error~
+    - =C-c ! n= ~flycheck-next-error~
+
+  + =C-c != is both awkward to say and to type. The demo config uses:
+    - =M-p= ~flycheck-previous-error~
+    - =M-n= ~flycheck-next-error~
+
+  * Navigate to the error using =M-p=
+
+  The compiler has told us that, "You need DeriveFoldable to derive an instance
+  for this class."  Intero is able to apply some of the compiler suggestions,
+  and has told us that it is able to apply this suggestion if we type =C-c C-r=.
+
+  * Apply the suggestion: =C-c C-r=
+
+  A new buffer will popup that asks us to choose what to apply. There is only
+  one option in this case, so it is already checked. Pressing enter on an option
+  checks or unchecks it.
+
+  * Apply the choice: =C-c C-c=
+
+** Viewing Types and Info
+
+   Intero uses eldoc to show type signatures in the minibuffer.
+
+   * Move the cursor on top of ~Cons~
+
+   + The type can be manually shown when eldoc is disabled: =C-c C-t=
+
+   Type classes and functions have additional information that can be displayed.
+
+   * Move the cursor on top of Foldable and prese =C-c C-i=
+
+   + The extra information includes associativity (left or right) of infix
+     operators. E.g. looking up the info on ~+~:
+     #+BEGIN_SRC haskell
+       infixl 6 +
+     #+END_SRC
+
+** Car
+
+   * Add the definition of ~car~.
+     #+BEGIN_SRC haskell
+       -- | Returns the first element, if non-empty.
+       --
+       -- >>> car Nil
+       -- Nothing
+       --
+       -- >>> car (Cons 'a' Nil)
+       -- Just 'a'
+       car :: List a -> Maybe a
+       car xs = case xs of
+         Nil      -> Nothing
+         Cons x _ -> Just x
+     #+END_SRC
+
+** Running Tests
+
+   The =-- >>>= bits are [[https://github.com/sol/doctest#doctest-test-interactive-haskell-examples][Doctest]] examples. Projectile provides =C-c p P= for running
+   all tests by default, but we can run just the tests in this file by modifying
+   the command. First, we need to add a ~main~ method to =Main.hs= so that the
+   project can compile.
+
+   * Insert the =main= template
+
+     1. =C-c p f Main.hs=
+
+     2. Type =main= followed by =M-/=
+
+     3. Select "main module" and press enter
+
+     4. Save the file and switch back to /List.hs/: =C-c p b List.hs=
+
+   * Type =C-c p P= and append the command with:
+     =doctest --test-arguments src/Demo/List.hs=
+
+   A compilation buffer will appear that shows the results of the
+   tests. Projectile will remember the modified command for future runs.
+
+** REPL
+
+   + =C-c C-l= load the current buffer into the REPL
+   + =C-c C-z= switch back and forth between REPL and the module
+   + =M-n= next input
+   + =M-p= previous input
+
+** Cdr
+
+   Sometimes it is useful to define a function before specifying its type.
+
+   #+BEGIN_SRC haskell
+     cdr Nil = Nil
+     cdr (Cons _ xs) = xs
+   #+END_SRC
+
+** Insert Type
+
+   + =C-u C-c C-t=
+
+** Find Test File
+
+   + =C-p p 4 t=
+
+   + =M-x intero-targets=
+
+** Main
+
+   + =M-g M-i= ~haskell-navigate-imports~
+   + =C-u M-g M-i= return to point before jumping
+
+** [[http://company-mode.github.io/][Company]]
+
+   + =M-n= ~company-select-next~
+   + =M-p= ~company-select-previous~
+   + =C-s= ~company-search-candidates~
+   + =C-M-s= ~company-filter-candidates~
+   + =RET= ~company-complete-selection~
+
+** HLint
+
+   Flycheck highlights style suggestions.
+
+   Use hlint-refactor to apply suggestions.
+
+   + =C-c , b= ~hlint-refactor-refactor-buffer~
+   + =C-c , r= ~hlint-refactor-refactor-at-point~
+
+** Jump to Definition
+
+   + =M-.= jump to definition
+   + ~M-~, return
+
+** Build with Extra GHC Options
+
+   1. Press =C-c p c=
+   2. Append:
+      #+BEGIN_SRC sh
+        --ghc-options '-Werror -O2' --exec 'demo-list car 1 2 3'
+      #+END_SRC
+
+* Questions

@@ -1,6 +1,6 @@
 module Demo.ListSpec where
 
-import Test.HSpec
+import Test.Hspec
 
 import Demo.List
 
@@ -8,6 +8,6 @@ main = hspec spec
 
 spec = parallel $ do
   describe "List" $ do
-    describe "car" $ do
-      it "returns the head" $
+    describe "cdr" $ do
+      it "returns the tail" $
         pending

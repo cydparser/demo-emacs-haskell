@@ -1,0 +1,69 @@
+* =src/Main.hs=
+  #+BEGIN_SRC haskell
+    module Main where
+
+    import System.Environment
+
+    import Demo.List
+
+    main :: IO ()
+    main = do
+      args <- getArgs
+      case args of
+        "car":xs -> case car (fromList xs) of
+          Nothing -> putStrLn ""
+          Just a -> putStrLn a
+        _ -> putStrLn "Usage: not this"
+
+    f = False
+  #+END_SRC
+
+* =src/Demo/List.hs=
+  #+BEGIN_SRC haskell
+    {-# LANGUAGE DeriveFoldable #-}
+
+    module Demo.List where
+
+    data List a = Cons a (List a) | Nil
+      deriving (Eq, Foldable, Show)
+
+    -- | Returns the first element, if non-empty.
+    --
+    -- >>> car Nil
+    -- Nothing
+    --
+    -- >>> car (Cons 'a' Nil)
+    -- Just 'a'
+    car :: List a -> Maybe a
+    car xs = case xs of
+      Nil      -> Nothing
+      Cons x _ -> Just x
+
+    cdr :: List a -> List a
+    cdr Nil = Nil
+    cdr (Cons _ xs) = xs
+
+    fromList [] = Nil
+    fromList (x:xs) =
+      Cons x (fromList xs)
+
+    toList Nil = []
+    toList (Cons x xs) = x : toList xs
+  #+END_SRC
+
+* =test/Demo/ListSpec.hs=
+  #+BEGIN_SRC haskell
+    module Demo.ListSpec where
+
+    import Test.Hspec
+
+    import Demo.List
+
+    main = hspec spec
+
+    spec = parallel $ do
+      describe "List" $ do
+        describe "cdr" $ do
+          it "returns the tail" $
+            shouldBe (cdr Nil) Nil
+  #+END_SRC
