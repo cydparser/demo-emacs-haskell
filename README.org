@@ -10,11 +10,11 @@ Originally presented for [[https://www.meetup.com/PDX-Emacs-Hackers/][PDX Emacs 
 *** Haskell Tools
     1. Install [[https://docs.haskellstack.org/en/stable/install_and_upgrade/][Stack]]
     2. =stack setup=
-    3. =stack build --dependencies-only= --test
+    3. =stack build --dependencies-only --test=
     4. =stack build intero=
     5. =stack install apply-refact hlint=
 
 *** Emacs
-    1. =mv ~/.emacs.d \~/emacs.orig=
-    2. =cp -r emacs.d ~/.emacs.d=
+    1. =mv $HOME/.emacs.d $HOME/emacs.orig=
+    2. =cp -r emacs.d $HOME/.emacs.d=
     3. (Re)Start Emacs
