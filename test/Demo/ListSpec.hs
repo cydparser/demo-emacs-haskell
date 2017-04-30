@@ -9,5 +9,4 @@ main = hspec spec
 spec = parallel $ do
   describe "List" $ do
     describe "cdr" $ do
-      it "returns the tail" $
-        pending
+      undefined

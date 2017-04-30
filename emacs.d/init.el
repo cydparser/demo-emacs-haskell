@@ -119,7 +119,9 @@
          ("C-x C-f" . helm-find-files)
          ("C-x b" . helm-mini)
          ("M-s o" . helm-occur)
-         ("M-x" . helm-M-x))
+         ("M-x" . helm-M-x)
+         :map helm-map
+         ([tab] . helm-execute-persistent-action))
   :init
   (progn
     (setq helm-M-x-fuzzy-match t
@@ -293,10 +295,6 @@
     (make-variable-buffer-local 'projectile-tags-command)
     (projectile-mode)))
 
-(use-package speedbar
-  :defer t
-  :commands (speedbar-add-supported-extension))
-
 ;;; Haskell Packages
 
 (use-package haskell-mode
@@ -311,10 +309,7 @@
           haskell-compile-cabal-build-command
           "cd %s && stack build --ghc-options -ferror-spans"
           haskell-compile-command
-          "stack ghc -- -Wall -ferror-spans -fforce-recomp -c %s"))
-  :config
-  (progn
-    (speedbar-add-supported-extension '(".hs" ".lhs"))))
+          "stack ghc -- -Wall -ferror-spans -fforce-recomp -c %s")))
 
 (use-package haskell-snippets
   :defer t)

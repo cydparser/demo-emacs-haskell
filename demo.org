@@ -24,71 +24,79 @@
 
 ** [[https://github.com/jwiegley/use-package][use-package]]
 
-  The [[./emacs.d/init.el][init]] config included with this demo uses use-package to install and
+  The [[./emacs.d/init.el][init]] file included with this demo uses /use-package/ to install and
   configure packages.
 
   + View added keybindings: =M-x describe-personal-keybindings=
 
-** [[https://github.com/kai2nenobu/guide-key][guide-key]]
+** [[https://github.com/justbur/emacs-which-key][which-key]]
 
-  The package guide-key displays available keygindings automatically in the
-  minibuffer. Typing the start of a command and waiting will result in a popup
-  that shows commands that have the same prefix.
+  The package /which-key/ displays available keybindings automatically in the
+  minibuffer. Typing the start of a command and waiting a second will result in
+  a pop-up listing commands that begin with the same prefix.
+
+  *Do*:
+
+  1. Type =C-c p= and wait one second
+
+  2. Press =C-g= to close the buffer and cancel the command
 
 * Haskell
 
   Haskell is a purely functional, lazy, statically typed language.
 
+  + Skip to [[The Project]] if you are familiar with Haskell
+
 ** Similarities to Emacs Lisp
 
-  + Expressions rather than statements
+   + Expressions rather than statements
 
-    #+BEGIN_SRC haskell
-      -- Only definitions are allowed at the top-level.
-      x = if expr
-        then "something"
-        else "otherthing"
-    #+END_SRC
+     #+BEGIN_SRC haskell
+       -- Only definitions are allowed at the top-level.
+       x = if expr
+         then "something"
+         else "otherthing"
+     #+END_SRC
 
-  + First-class Functions and Lambdas
+   + First-class Functions and Lambdas
 
-    Functions, lambdas, and curried functions are all called in the same way --
-    there is not an equivalent of ~#'~, ~apply~, ~apply-partially~, and ~funcall~.
+     Functions, lambdas, and curried functions are all called in the same way --
+     there is not an equivalent of #', ~apply~, ~apply-partially~, and ~funcall~.
 
-    #+BEGIN_SRC haskell
-      -- A function definition.
-      plus1 n = n + 1
+     #+BEGIN_SRC haskell
+       -- A function definition.
+       plus1 n = n + 1
 
-      --     + lambda
-      --     v
-      div2 = \n -> n / 2
+       --     + lambda
+       --     v
+       div2 = \n -> n / 2
 
-      thenDiv2 f = -- Functions can be passed as arguments.
-        f . div2   -- And returned.
+       thenDiv2 f = -- Functions can be passed as arguments.
+         f . div2   -- And returned.
 
-      -- `.` is for function composition. It is an ordinary function.
+       -- `.` is for function composition. It is an ordinary function.
 
-      main = print (thenDiv2 plus1 10)
-      -- 6
-    #+END_SRC
+       main = print (thenDiv2 plus1 10)
+       -- 6
+     #+END_SRC
 
-  + Let Expressions
+   + Let Expressions
 
-    #+BEGIN_SRC haskell
-      func x =
-        let y = x + 1
-            f a = a * 10  -- Local function
-        in f y
+     #+BEGIN_SRC haskell
+       func x =
+         let y = x + 1
+             f a = a * 10  -- Local function
+         in f y
 
-      -- Alternatively:
-      func' x =
-        f y
-        where
-          y = x + 1
-          f a = a * 10
-    #+END_SRC
+       -- Alternatively:
+       func' x =
+         f y
+         where
+           y = x + 1
+           f a = a * 10
+     #+END_SRC
 
-  + REPL (GHCi)
+   + REPL (GHCi)
 
 ** Statically Typed with Type Inference
 
@@ -96,8 +104,8 @@
 
    #+BEGIN_SRC haskell
      --      + "has type"
-     --      |   + an array of some type
-     --      |   |  + the type constructor of functions
+     --      |   + a list of type `a` values
+     --      |   |  + the type constructor of functions (domain -> range)
      --      |   |  |  + concrete type
      --      v   v  v  v
      length' :: [a] -> Int
@@ -179,7 +187,7 @@
 
 * The Project
 
-  A simple executable that manipulates lists.
+  We will build a simple executable that manipulates lists.
 
   #+BEGIN_SRC sh
     stack exec -- demo-list cdr 1 2 3
@@ -188,27 +196,46 @@
 
 ** [[http://projectile.readthedocs.io/en/latest/][Projectile]]
 
-   + Enables project navigation, building, testing, etc.
+   Provides project navigation, building, testing, etc.
 
-   + Prefix =C-c p=
+   + Keybindings (small subset)
 
-   + Prefix =C-c p 4= performs the action in a different frame without hiding the
-     current buffer
+     - =C-c p != =projectile-run-shell-command-in-root=
+     - =C-c p R= =projectile-regenerate-tags=
+     - =C-c p b= =projectile-switch-to-buffer=
+     - =C-c p c= =projectile-compile-project=
+     - =C-c p f= =projectile-find-file=
+     - =C-c p j= =projectile-find-tag=
+     - =C-c p t= =projectile-toggle-between-implementation-and-test=
 
-   * Open /List.hs/ in a different frame: =C-c p 4 f List.hs=
+   + Prefix =C-c p 4= performs some actions in a different frame (pane) without
+     hiding the current buffer
+
+     - =C-c p 4 f= =projectile-find-file-other-window=
+     - =C-c p 4 t= =projectile-find-implementation-or-test-other-window=
+
+   *Do*: open /List.hs/ in a different frame.
+
+   1. Type =C-c p 4 f=
+      A different pane will display all files of this project.
+
+   2. Start typing =List.hs=
+
+   3. Press =RET= when src/demo/List.hs is highlighted
 
 ** [[https://emacs-helm.github.io/helm/][Helm]]
 
-  After typing =C-c p 4 f= the minibuffer will display a list of files. Helm
-  allows one to use fuzzy searching amongst other (perhaps too many) things.
+   The list of project files in the previous section was a /helm/ buffer. Helm
+   allows one to use fuzzy searching among other (perhaps too many) things.
 
   + Use =C-j= when you would instinctively use =tab=
 
   + Uses normal Emacs navigation bindings (=C-n=, =C-p=, =M->= etc.)
 
-  + Press enter when the highlighted selection is what you want
+  + Press =RET= when the highlighted selection is what you want
 
-  + Standard Emacs keybindings overridden by this config:
+  + Standard Emacs keybindings overridden by this demo's Emacs init file:
+
     - =C-x C-f= ~helm-find-files~
     - =C-h a= ~helm-apropos~
     - =C-x b= ~helm-mini~
@@ -218,6 +245,7 @@
 ** [[https://commercialhaskell.github.io/intero/][Intero]]
 
   + Backend process that enables:
+
     - On the fly type checking
     - Code completion
     - Jumping to definitions
@@ -235,16 +263,20 @@
     if Intero was already installed, or
 
     #+BEGIN_SRC text
-      Installing intero-0.1.20 automatically ...
+      Installing intero-x.y.z automatically ...
     #+END_SRC
 
-  + View running backends with =M-x intero-list-buffers=
+    It might take a couple of minutes to build Intero.
+
+  + View running Intero backends with =M-x intero-list-buffers=
+
     - =p= move up
     - =n= move down
     - =d= mark a buffer for deletion
     - =x= delete marked buffers
 
   + Keybindings
+
     - =C-c C-i= ~intero-info~
     - =C-c C-l= ~intero-repl-load~
     - =C-c C-r= ~intero-apply-suggestions~
@@ -252,21 +284,31 @@
     - =C-c C-z= ~intero-repl~
     - =M-.= ~intero-goto-definition~
 
-** Yasnippet [[https://github.com/haskell/haskell-snippets#available-expansion-keys][haskell-snippets]]
+** [[https://github.com/haskell/haskell-snippets#available-expansion-keys][haskell-snippets]]
 
-  In /List.hs/, type =mod= and press =M-/= (~hippie-expand~). The minibuffer (helm
-  popup) will display multiple options. Select "simple module" and press
-  enter. Press =tab= to accept the default module named.
+   [[https://github.com/joaotavora/yasnippet][Yasnippet]] provides Emacs with templates to reduce the amount one has to
+   type. /haskell-snippets/ adds templates for /haskell-mode/.
 
-  + Especially useful templates
-    - =mod= add module name based on filepath
-    - =main= add ~Main~ module and ~main~ definition
-    - =lang= add language extension pragma
-    - =opt= add GHC option pragma
+   + Especially useful templates
+
+     - =mod= adds properly named (based on filepath) module section
+     - =main= adds ~Main~ module and ~main~ function
+     - =lang= adds language extension pragmas
+     - =opt= adds GHC option pragmas
+
+   *Do*: name the module in /List.hs/ using a snippet
+
+   1. Type =mod= and press =M-/= (~hippie-expand~)
+
+      A /helm/ buffer will appear with a list of options.
+
+   2. Select "simple module" and press =RET=
+
+   3. Press =tab= to accept the default module name.
 
 ** ~List a~
 
-  * Add the following:
+  *Do:* add the following code to /List.hs/.
 
   #+BEGIN_SRC haskell
     data List a = Cons a (List a) | Nil
@@ -279,162 +321,409 @@
 
   + =M-x hayoo= Search using [[http://hayoo.fh-wedel.de/][Hayoo!]]
 
-  + =M-x= hoogle Search using [[https://www.haskell.org/hoogle/][Hoogle]]
+  + =M-x hoogle= Search using [[https://www.haskell.org/hoogle/][Hoogle]]
 
-  We want to find a function takes a collection and indicates if it is empty.
+  *Do*: find a function that takes a collection and indicates if it is empty.
 
-  * Search for ~f a -> Bool~
+  1. Type =M-x hayoo= and press =RET=
+
+  2. Type ~f a -> Bool~ and press =RET=
+
+     Your browser should open with ~null~ from ~Data.Foldable~ at the top of the
+     search results.
 
 ** [[http://www.flycheck.org/en/latest/][Flycheck]]
 
-  ~null~ is the function that we want, but it requires that ~List~ be ~Foldable~. We
-  could write the ~Foldable~ instance ourselves, but the compiler can implement it
-  for us.
+   ~null~ is the function that we want, but it requires that ~List~ be ~Foldable~. We
+   could write the ~Foldable~ instance ourselves, but the compiler can implement
+   it for us.
 
-  * Add ~Foldable~ to the ~deriving~ tuple.
+   *Do*: add ~Foldable~ to the ~deriving~ tuple.
 
-  Intero uses Flycheck to compile the project and warn about errors. ~Foldable~ is
-  underlined with a red squigly line.
+   #+BEGIN_SRC haskell
+     deriving (Eq, Foldable, Show)
+   #+END_SRC
 
-  + Fly check uses prefix =C-c !=:
-    - =C-c ! p= ~flycheck-previous-error~
-    - =C-c ! n= ~flycheck-next-error~
+   Intero uses Flycheck to compile the project and indicate errors. ~Foldable~
+   should be underlined with a red, squigly line.
 
-  + =C-c != is both awkward to say and to type. The demo config uses:
-    - =M-p= ~flycheck-previous-error~
-    - =M-n= ~flycheck-next-error~
+   + Fly check uses prefix =C-c !=:
 
-  * Navigate to the error using =M-p=
+     - =C-c ! l= ~flycheck-list-errors~
+     - =C-c ! p= ~flycheck-previous-error~
+     - =C-c ! n= ~flycheck-next-error~
 
-  The compiler has told us that, "You need DeriveFoldable to derive an instance
-  for this class."  Intero is able to apply some of the compiler suggestions,
-  and has told us that it is able to apply this suggestion if we type =C-c C-r=.
+   + =C-c != is both awkward to say and type. The demo's init file binds:
 
-  * Apply the suggestion: =C-c C-r=
+     - =M-p= ~flycheck-previous-error~
+     - =M-n= ~flycheck-next-error~
 
-  A new buffer will popup that asks us to choose what to apply. There is only
-  one option in this case, so it is already checked. Pressing enter on an option
-  checks or unchecks it.
+   *Do*:
 
-  * Apply the choice: =C-c C-c=
+   1. =M-p= go to the previous error
+
+      The compiler has told us that, "You need DeriveFoldable to derive an
+      instance for this class." Intero is able to apply some of the compiler's
+      suggestions, and will tell us to press =C-c C-r= if the error can be
+      automatically fixed.
+
+   2. =C-c C-r= to choose which suggestions to apply
+
+      A new buffer will pop up asking us to choose which suggestions to
+      apply. There is only one option in this case, so it is already
+      checked. Pressing enter on an option will toggle wether it is checked.
+
+   3. =C-c C-c= apply the marked suggestion
 
 ** Viewing Types and Info
 
-   Intero uses eldoc to show type signatures in the minibuffer.
+   Intero uses /eldoc/ to automatically show type signatures in the minibuffer.
 
-   * Move the cursor on top of ~Cons~
+   + The type can be manually shown if /eldoc/ is disabled: =C-c C-t=
 
-   + The type can be manually shown when eldoc is disabled: =C-c C-t=
+   *Do*:
+
+   1. Move the cursor onto ~Cons~
 
    Type classes and functions have additional information that can be displayed.
 
-   * Move the cursor on top of Foldable and prese =C-c C-i=
+   *Do*:
 
-   + The extra information includes associativity (left or right) of infix
-     operators. E.g. looking up the info on ~+~:
+   1. Move the cursor onto ~Foldable~ and press =C-c C-i=
+
+   + The /info/ for infix operators includes associativity
+
+     E.g. looking up the info on ~+~:
      #+BEGIN_SRC haskell
        infixl 6 +
      #+END_SRC
 
-** Car
+** Implement ~car~
 
-   * Add the definition of ~car~.
-     #+BEGIN_SRC haskell
-       -- | Returns the first element, if non-empty.
-       --
-       -- >>> car Nil
-       -- Nothing
-       --
-       -- >>> car (Cons 'a' Nil)
-       -- Just 'a'
-       car :: List a -> Maybe a
-       car xs = case xs of
-         Nil      -> Nothing
-         Cons x _ -> Just x
-     #+END_SRC
+   *Do*: add the definition of ~car~.
+
+   #+BEGIN_SRC haskell
+     -- | Returns the first element, if non-empty.
+     --
+     -- >>> car Nil
+     -- Nothing
+     --
+     -- >>> car (Cons 'a' Nil)
+     -- Just 'a'
+     car :: List a -> Maybe a
+     car xs = case xs of
+       Nil      -> Nothing
+       Cons x _ -> Just x
+   #+END_SRC
 
 ** Running Tests
 
    The =-- >>>= bits are [[https://github.com/sol/doctest#doctest-test-interactive-haskell-examples][Doctest]] examples. Projectile provides =C-c p P= for running
-   all tests by default, but we can run just the tests in this file by modifying
-   the command. First, we need to add a ~main~ method to =Main.hs= so that the
-   project can compile.
+   all tests by default. We can run just the tests in this file by modifying the
+   command. First, we need to add a ~main~ method to =Main.hs= so that the project
+   can compile.
 
-   * Insert the =main= template
+   *Do*: use the =main= template to satisfy the compiler.
 
-     1. =C-c p f Main.hs=
+   1. =C-c p f Main.hs= open /Main.hs/
 
-     2. Type =main= followed by =M-/=
+   2. Type =main= and press =M-/=
 
-     3. Select "main module" and press enter
+   3. Select "main module" and press =RET=
 
-     4. Save the file and switch back to /List.hs/: =C-c p b List.hs=
+   4. Save the file
 
-   * Type =C-c p P= and append the command with:
-     =doctest --test-arguments src/Demo/List.hs=
+   5. Switch back to /List.hs/: =C-c p b List.hs=
 
-   A compilation buffer will appear that shows the results of the
-   tests. Projectile will remember the modified command for future runs.
+   *Do*: run Doctest only on /List.hs/.
+
+   1. Type =C-c p P=
+
+   2. Append the following to the command after a space:
+
+      #+BEGIN_SRC text
+        :doctest --test-arguments src/Demo/List.hs
+      #+END_SRC
+
+      A compilation buffer will show the test results.
+
+   + Projectile will remember the modified command for future runs
+
+   + See [[test/DocTest.hs]] to see how to enable testing a single file in other
+     projects
 
 ** REPL
 
-   + =C-c C-l= load the current buffer into the REPL
-   + =C-c C-z= switch back and forth between REPL and the module
-   + =M-n= next input
-   + =M-p= previous input
+   + Keybindings
 
-** Cdr
+     - =C-c C-l= load the current buffer into the REPL
+     - =C-c C-z= switch back and forth between REPL and the module
+     - =M-n= next input
+     - =M-p= previous input
 
-   Sometimes it is useful to define a function before specifying its type.
+   *Do*: load /List.hs/ into the REPL
 
-   #+BEGIN_SRC haskell
-     cdr Nil = Nil
-     cdr (Cons _ xs) = xs
-   #+END_SRC
+   1. =C-c C-l= to switch to the REPL
 
-** Insert Type
+   2. Type ~car (Cons 'a' (Cons 'b' Nil))~ and press =RET=
 
-   + =C-u C-c C-t=
+** Implement ~cdr~
 
-** Find Test File
+   Sometimes it is useful to impelment a function without specifying its type,
+   and later to insert the inferred type.
 
-   + =C-p p 4 t=
+   *Do*: insert the inferred type.
 
-   + =M-x intero-targets=
+   1. Implement =cdr=
 
-** Main
+      #+BEGIN_SRC haskell
+        cdr Nil = Nil
+        cdr (Cons _ xs) = xs
+      #+END_SRC
 
-   + =M-g M-i= ~haskell-navigate-imports~
-   + =C-u M-g M-i= return to point before jumping
+   2. Move onto the first occurrence of =cdr=
+
+   3. Insert the type signature: =C-u C-c C-t=
+
+      The above command should have added a line containing:
+      #+BEGIN_SRC haskell
+        cdr :: List a -> List a
+      #+END_SRC
+
+      If it did not, try loading the module into the REPL (=C-c C-l=) to make sure
+      that it compiles cleanly and try again.
+
+** Jump to Test Files
+
+   Projectile can jump to a file's corresponding test file, creating a new file
+   if it doesn't exist.
+
+   *Do*: jump to /ListSpec.hs/.
+
+   1. =C-c p t= from /List.hs/
+
+      The first ~import~ will be marked as an error. This is due to Intero only
+      loading dependencies of the library initially. The tests are a separate
+      target, with their own dependencies.
+
+   2. =M-x intero-targets= to add the =:spec= target
+
+      A buffer will appear with a list of three targets.
+
+   3. Move the cursor to the target ending with =:test:spec= and press =RET=
+
+   4. =C-c C-c= to apply the change
+
+      The import error should go away.
+
+** Implement and Run Specs
+
+   *Do*:
+
+   1. Replace ~undefined~ with the following
+
+      #+BEGIN_SRC haskell
+        it "returns the tail" $ do
+          let xs = Cons 'b' (Cons 'c' Nil)
+          cdr (Cons 'a' xs) `shouldBe` xs
+
+        it "returns Nil for empty lists" $
+          cdr Nil `shouldBe` Nil
+      #+END_SRC
+
+      The last use of ~cdr~ should be marked as an error due to an "ambiguous type
+      variable." This is caused by ~shouldBe~'s constraint of ~(Show a, Eq a)~ and
+      the ~Nil~'s inferred type of ~List a~ (no constraints).
+
+   2. At the top of the file write =lang= and press =M-/=
+
+   3. Type =typ app= and select =TypeApplications=
+
+   4. Add ~@Char~ after the last ~Nil~
+
+   5. Run the tests: =C-c p P=
+
+      Change the test command to =stack build --test :spec= to run only Hspec
+      tests. A compilation buffer will display the results.
+
+** Imports
+
+   + Keybindings
+
+     - =M-g M-i= ~haskell-navigate-imports~ (custom)
+
+       Pressing =C-u= before =M-g M-i= will return the cursor to where it was before
+       jumping.
+
+     - C-c C-, =haskell-mode-format-imports=
+
+       Both aligns and orders imports.
+
+   *Do*:
+
+   1. Jump to /Main.hs/: =C-c p f main= and press =RET=
+
+   2. Add the executable target to intero: =M-x intero-targets=
+
+      Mark the line ending with =:exe:demo-list= and press =C-c C-c.=
+
+   3. Replace ~main~ with the following
+
+      #+BEGIN_SRC haskell
+        import System.Environment (getArgs)
+
+        import Demo.List
+
+        main :: IO ()
+        main = do
+          args <- getArgs
+          case args of
+            "car":xs ->
+              case car (undefined xs) of
+                Nothing -> putStrLn ""
+                Just a -> putStrLn a
+            _ -> do
+              putStrLn "Usage: demo-list <car|cdr> [text]..."
+      #+END_SRC
+
+   4. Move to the import section, =M-g M-i=, and press =C-o= to insert a blank line
+
+      If there were no previous imports the cursor would have moved to ~main~.
+
+   5. Type ~import Sys~
+
+      A /company/ completion pop-up should have appeared with a list of modules
+      that begin with =Sys=.
 
 ** [[http://company-mode.github.io/][Company]]
 
-   + =M-n= ~company-select-next~
-   + =M-p= ~company-select-previous~
-   + =C-s= ~company-search-candidates~
-   + =C-M-s= ~company-filter-candidates~
-   + =RET= ~company-complete-selection~
+   Company is used for text completion.
 
-** HLint
+   + Keybindings
 
-   Flycheck highlights style suggestions.
+     - =M-n= ~company-select-next~
+     - =M-p= ~company-select-previous~
+     - =C-s= ~company-search-candidates~
+     - =C-M-s= ~company-filter-candidates~
+     - =RET= ~company-complete-selection~
 
-   Use hlint-refactor to apply suggestions.
+  *Do*:
 
-   + =C-c , b= ~hlint-refactor-refactor-buffer~
-   + =C-c , r= ~hlint-refactor-refactor-at-point~
+  1. Press =M-n= to move the selection down to ~System.Exit~ and press =RET=
+
+  2. Format the imports: C-c C-,
+
+  3. Return to where the cursor was before modifying the imports: =C-u M-g M-i=
+
+  4. Add ~exitFailure~ after the usage message
+
+     If you type slowly enough /company/ will provide a list of completions.
+
+  5. Replace ~undefined xs~ with ~fromList xs~
+
+     We still need to define this.
 
 ** Jump to Definition
 
-   + =M-.= jump to definition
-   + ~M-~, return
+   Intero keeps track of where things were defined and uses this information to
+   jump to the definition of the item under the cursor. Intero will only jump to
+   things defined within this project.
 
-** Build with Extra GHC Options
+   + Keybindings
 
-   1. Press =C-c p c=
-   2. Append:
+     - =M-.= jump to definition
+     - M-, return to the previous location
+
+   *Do*:
+
+   1. Move the cursor onto ~car~
+
+   2. Press =M-.= to move to the definition
+
+   3. Go back to where the cursor was before: M-,
+
+   *Optional*: jump to third party library definitions.
+
+   1. Install and configure [[https://github.com/aloiscochard/codex][codex]]
+
       #+BEGIN_SRC sh
-        --ghc-options '-Werror -O2' --exec 'demo-list car 1 2 3'
+        stack install codex hasktags
+        codex set format emacs
       #+END_SRC
 
-* Questions
+   2. Generate tags: =C-c p R=
+
+      This will create or update the [[./TAGS][tags]] file. It must be manually regenerated
+      after modifying the dependencies of a project.
+
+   3. Move the cursor onto ~getArgs~ and press =M-.=
+
+   4. Return to /Main.hs/: M-,
+
+   5. Try using =C-c p j= to jump to an arbitrary definition
+
+      Keybindings for the /xref/ results (after choosing a tag):
+
+      - =C-o= =xref-show-location-at-point=
+      - =RET= =xref-goto-xref=
+      - =n= =xref-next-line=
+      - =p= =xref-prev-line=
+      - =q= =quit-window=
+
+** [[https://github.com/ndmitchell/hlint][HLint]]
+
+   There is a /flycheck/ checker for HLint that provides code improvement
+   suggestions. Some of the suggestions can be automatically applied using
+   /hlint-refactor/.
+
+   + Keybindings
+
+     - C-c , b ~hlint-refactor-refactor-buffer~
+     - C-c , r ~hlint-refactor-refactor-at-point~
+
+   *Do*: implement ~fromList~ in /List.hs/.
+
+   1. Add the following definition
+
+      #+BEGIN_SRC haskell
+        fromList xs =
+          foldr (Cons . id) Nil xs
+      #+END_SRC
+
+   2. Press =M-p= to move the cursor onto ~Cons~
+
+      The yellow squigly lines are suggestions from HLint. Suggestions can be
+      disabled by adding a [[https://github.com/ndmitchell/hlint/blob/master/data/default.yaml][.hlint.yaml]] to a project.
+
+   3. Apply the suggestion to remove ~id~: C-c , r
+
+      Sometimes applying a suggestion results in another suggestion.
+
+   2. Try to apply the other suggestions
+
+      Some suggestions cannot be applied automatically.
+
+** Build the Project
+
+   *Do*:
+
+   1. Compile the executable: =C-c p c=
+
+      A default compile command will be shown. Add the following to the command
+      to enable more optimizations and to turn warning into errors.
+
+      #+BEGIN_SRC sh
+        --ghc-options '-Werror -O2'
+      #+END_SRC
+
+   2. Verify that the executable works: =C-c p != followed by:
+
+      #+BEGIN_SRC sh
+        stack exec -- demo-list car 1 2 3
+      #+END_SRC
+
+** Extra Credit
+
+   + Add specs for ~car~
+
+   + Implement =demo-list cdr=

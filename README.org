@@ -1,10 +1,12 @@
 #+TITLE: Using Emacs with Haskell Projects
 
-Originally presented for [[https://www.meetup.com/PDX-Emacs-Hackers/][PDX Emacs Hackers]].
+Originally presented for the "PDX Emacs Hackers" group. The presentation was
+designed to be beneficial to people who were possibly new to either Emacs or
+Haskell.
 
 * Files
-  + [[./emacs.d/init.el][init.el]]
-  + [[./demo.org][Demo]]
+  + [[./emacs.d/init.el][init.el]]: Emacs configuration needed to follow along
+  + [[./demo.org][demo.org]]: the presentation
 
 * Setup
 *** Haskell Tools
@@ -17,4 +19,4 @@ Originally presented for [[https://www.meetup.com/PDX-Emacs-Hackers/][PDX Emacs 
 *** Emacs
     1. =mv $HOME/.emacs.d $HOME/emacs.orig=
     2. =cp -r emacs.d $HOME/.emacs.d=
-    3. (Re)Start Emacs
+    3. (Re)start Emacs

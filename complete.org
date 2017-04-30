@@ -2,7 +2,8 @@
   #+BEGIN_SRC haskell
     module Main where
 
-    import System.Environment
+    import System.Environment (getArgs)
+    import System.Exit
 
     import Demo.List
 
@@ -10,18 +11,18 @@
     main = do
       args <- getArgs
       case args of
-        "car":xs -> case car (fromList xs) of
-          Nothing -> putStrLn ""
-          Just a -> putStrLn a
-        _ -> putStrLn "Usage: not this"
-
-    f = False
+        "car":xs ->
+          case car (fromList xs) of
+            Nothing -> putStrLn ""
+            Just a -> putStrLn a
+        _ -> do
+          putStrLn "Usage: demo-list <car|cdr> [text]..."
+          exitFailure
   #+END_SRC
 
 * =src/Demo/List.hs=
   #+BEGIN_SRC haskell
     {-# LANGUAGE DeriveFoldable #-}
-
     module Demo.List where
 
     data List a = Cons a (List a) | Nil
@@ -43,16 +44,14 @@
     cdr Nil = Nil
     cdr (Cons _ xs) = xs
 
-    fromList [] = Nil
-    fromList (x:xs) =
-      Cons x (fromList xs)
-
-    toList Nil = []
-    toList (Cons x xs) = x : toList xs
+    fromList =
+      foldr Cons Nil
   #+END_SRC
 
 * =test/Demo/ListSpec.hs=
   #+BEGIN_SRC haskell
+    {-# LANGUAGE TypeApplications #-}
+
     module Demo.ListSpec where
 
     import Test.Hspec
@@ -64,6 +63,10 @@
     spec = parallel $ do
       describe "List" $ do
         describe "cdr" $ do
-          it "returns the tail" $
-            shouldBe (cdr Nil) Nil
+          it "returns the tail" $ do
+            let xs = Cons 'b' (Cons 'c' Nil)
+            cdr (Cons 'a' xs) `shouldBe` xs
+
+          it "returns Nil for empty lists" $
+            cdr Nil `shouldBe` Nil @Char
   #+END_SRC

@@ -9,9 +9,9 @@ default-extensions:
 
 ghc-options:
   - -Wall
-  - -fno-warn-missing-signatures
-  - -fno-warn-type-defaults
-  - -fno-warn-unused-do-bind
+  - -Wno-missing-signatures
+  - -Wno-type-defaults
+  - -Wno-unused-do-bind
   - -threaded
   - -rtsopts
   - -with-rtsopts=-N
