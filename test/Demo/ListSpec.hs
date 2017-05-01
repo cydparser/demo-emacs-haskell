@@ -4,6 +4,8 @@ import Test.Hspec
 
 import Demo.List
 
+{-# ANN module "HLint: ignore Redundant do" #-}
+
 main = hspec spec
 
 spec = parallel $ do
