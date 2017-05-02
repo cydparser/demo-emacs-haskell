@@ -71,8 +71,8 @@
        --     v
        div2 = \n -> n / 2
 
-       thenDiv2 f = -- Functions can be passed as arguments.
-         f . div2   -- And returned.
+       thenDiv2 f = -- Functions can be passed as arguments
+         f . div2   -- and returned.
 
        -- `.` is for function composition. It is an ordinary function.
 
@@ -161,7 +161,7 @@
 
 ** No Nil or Null
 
-   + The possibility for the absence of a value is expressed in the type.
+   + The possibility for the absence of a value is expressed in the type
 
    #+BEGIN_SRC haskell
      -- data Maybe a = Just a | Nothing
@@ -172,7 +172,7 @@
 
 ** IO Actions
 
-   + Using IO changes the type of a function.
+   + Using IO changes the type of a function
 
    #+BEGIN_SRC haskell
      f :: Int -> IO Int
@@ -202,10 +202,12 @@
 
      - =C-c p != =projectile-run-shell-command-in-root=
      - =C-c p R= =projectile-regenerate-tags=
+     - =C-c p S= =projectile-save-project-buffers=
      - =C-c p b= =projectile-switch-to-buffer=
      - =C-c p c= =projectile-compile-project=
      - =C-c p f= =projectile-find-file=
      - =C-c p j= =projectile-find-tag=
+     - =C-c p k= =projectile-kill-buffers=
      - =C-c p t= =projectile-toggle-between-implementation-and-test=
 
      Press =C-c p= and wait a second to see the full list. It is worth spending
@@ -221,7 +223,7 @@
 
    1. Type =C-c p 4 f=
 
-      A different pane will display all files of this project.
+      A different pane will display all files in this project.
 
    2. Start typing =List.hs=
 
@@ -234,7 +236,7 @@
 
   + Uses normal Emacs navigation bindings (=C-n=, =C-p=, =M->= etc.)
 
-  + Press =RET= when the highlighted selection is what you want
+  + Press =RET= to choose the highlighted selection
 
   + Standard Emacs keybindings overridden for this tutorial
 
@@ -328,7 +330,7 @@
 
    2. Select "simple module" and press =RET=
 
-   3. Press =tab= to accept the default module name.
+   3. Press =tab= to accept the default module name
 
 ** ~List a~
 
@@ -347,7 +349,7 @@
 
   + =M-x hoogle= Search using [[https://www.haskell.org/hoogle/][Hoogle]]
 
-  *Do*: find a function that takes a collection and indicates if it is empty.
+  *Do*: find a function that takes a collection and indicates whether it is empty.
 
   1. Type =M-x hayoo= and press =RET=
 
@@ -379,7 +381,7 @@
    for ~Foldable~. We could write the ~Foldable~ instance ourselves, but the
    compiler can implement it for us.
 
-   1. Add ~Foldable~ to the ~deriving~ tuple.
+   1. Add ~Foldable~ to the ~deriving~ tuple
 
       #+BEGIN_SRC haskell
         deriving (Eq, Foldable, Show)
@@ -423,7 +425,7 @@
 
       Notice the type signature at the bottom-left of Emacs.
 
-   + Type classes and functions have additional information that can be displayed.
+   + Type classes and functions have additional displayable information
 
    *Do*: view info about ~Foldable~.
 
@@ -456,13 +458,13 @@
 
    *Do*: use the =main= template.
 
-   1. =C-c p f Main.hs= open /Main.hs/
+   1. Open /Main.hs/: =C-c p f Main.hs=
 
    2. Type =main= and press =M-/=
 
    3. Select "main module" and press =RET=
 
-   4. Save the file
+   4. Save modified project files: =C-c p S=
 
    5. Switch back to /List.hs/: =C-c p b List.hs=
 
@@ -509,7 +511,7 @@
 
 ** Implement ~cdr~
 
-   Sometimes it is useful to impelment a function without specifying its type,
+   Sometimes it is useful to implement a function without specifying its type,
    and later to insert the inferred type.
 
    *Do*: insert the inferred type.
@@ -534,7 +536,7 @@
 ** Jump to Test Files
 
    Projectile can jump to a file's corresponding test file, creating a new file
-   if it doesn't exist.
+   if one does not exist.
 
    *Do*: jump to /ListSpec.hs/.
 
@@ -708,7 +710,7 @@
 
    4. Try using =C-c p j= to jump to an arbitrary definition
 
-      If the symbol is defined in muliple places a /xref/ buffer will list all
+      If the symbol is defined in multiple places a /xref/ buffer will list all
       results.
 
    + Keybindings for /xref/ list
