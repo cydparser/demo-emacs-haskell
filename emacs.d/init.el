@@ -286,7 +286,6 @@
     (setq projectile-create-missing-test-files t
           projectile-mode-line nil
           projectile-use-git-grep t)
-    (make-variable-buffer-local 'projectile-tags-command)
     (projectile-mode)))
 
 ;;; Haskell Packages
@@ -328,7 +327,7 @@
             (eldoc-mode -1)
             (flycheck-mode -1))
         (intero-mode)
-        (setq projectile-tags-command "codex update")))
+        (set (make-local-variable 'projectile-tags-command) "codex update")))
 
     (add-hook 'haskell-mode-hook #'init-intero))
   :config
